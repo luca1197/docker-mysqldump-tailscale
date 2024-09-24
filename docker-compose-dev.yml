@@ -1,0 +1,13 @@
+services:
+  discord-bot:
+    container_name: docker-tailscale-mysqldump
+    build: .
+    restart: always
+    volumes:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+      - sys_module
+    env_file:
+      - ./.env.dev
+      
