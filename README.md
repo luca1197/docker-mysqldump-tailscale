@@ -1,4 +1,4 @@
-# docker-tailscale-mysqldump
+# docker-mysqldump-tailscale
 A Docker image that runs mysqldump but with a Tailscale connection local to the container.
 
 This allows you to dump / backup MySQL databases which are behind a Tailscale network without having to install and run Tailscale on the host.

@@ -1,6 +1,6 @@
 services:
-  tailscale-mysqldump:
-    container_name: docker-tailscale-mysqldump
+  mysqldump-tailscale:
+    container_name: docker-mysqldump-tailscale
     build: .
     restart: no
     volumes:
