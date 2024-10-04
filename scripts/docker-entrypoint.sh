@@ -9,9 +9,14 @@ tailscaled &
 sleep 3
 
 # Log into tailscale
-echo "[Tailscale] -> Logging in..."
+echo "[Tailscale] -> Logging in... (Login server: $([ -n "$TS_LOGIN_SERVER" ] && echo "$TS_LOGIN_SERVER" || echo "Tailscale official"))"
 
-tailscale up --login-server "$TS_LOGIN_SERVER" --accept-routes --hostname="$TS_HOSTNAME" --authkey=$TS_AUTHKEY
+tailscale_extra_args=()
+if [ -n "$TS_LOGIN_SERVER" ]; then
+    tailscale_extra_args+=("--login-server" "$TS_LOGIN_SERVER")
+fi
+
+tailscale up --accept-routes --hostname="$TS_HOSTNAME" --authkey=$TS_AUTHKEY "${tailscale_extra_args[@]}"
 
 # Wait for VPN connection
 until nc -z -v -w5 $DB_HOST $DB_PORT; do
@@ -39,6 +44,9 @@ function cleanup {
 }
 
 trap cleanup EXIT
+
+# Create dump directory
+mkdir -p /tmp/mysqldump
 
 # Output mysqldump version
 echo "[mysqldump] -> Version: $(mysqldump --version)"
