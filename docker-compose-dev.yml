@@ -1,7 +1,9 @@
 services:
   mysqldump-tailscale:
     container_name: docker-mysqldump-tailscale
-    build: .
+    build:
+      context: .
+      dockerfile: mysql-8.Dockerfile
     restart: no
     volumes:
       - /dev/net/tun:/dev/net/tun
