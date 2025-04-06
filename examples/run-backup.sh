@@ -28,7 +28,7 @@ trap cleanup EXIT
 
 # Run mysqldump container
 echo "[Script] -> Running mysqldump container"
-docker run --name "${backup_name}" --env-file "${env_file_path}" --cap-add NET_ADMIN --cap-add SYS_MODULE -v "/dev/net/tun:/dev/net/tun" ghcr.io/luca1197/docker-mysqldump-tailscale-mysql8:latest
+docker run --name "${backup_name}" --env-file "${env_file_path}" --pull=always --cap-add NET_ADMIN --cap-add SYS_MODULE --device "/dev/net/tun" -v "/dev/net/tun:/dev/net/tun" ghcr.io/luca1197/docker-mysqldump-tailscale-mysql8:latest
 
 # Set output file
 out_file_name="${backup_name}_$(date +"%Y_%m_%d-%H_%M_%S").sql.gz"
