@@ -37,6 +37,14 @@ user=$DB_USER
 password=$DB_PASSWORD
 EOF
 
+# Append MariaDB-specific config
+if [ "$MARIADB_VERIFY_SERVER_SSL" == "false" ]; then
+    cat <<EOF >> mysql-extra.cnf
+[client-mariadb]
+disable-ssl-verify-server-cert
+EOF
+fi
+
 # Cleanup trap
 function cleanup {
     echo "[Cleanup] -> Removing mysql config"
