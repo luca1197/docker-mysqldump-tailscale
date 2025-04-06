@@ -17,3 +17,6 @@ If you enabled compression by setting the `DUMP_COMPRESS` environment variable t
 
 ## Ready-to-use examples
 A ready-to-use script for backing up a MySQL database (e.g. for use with cron) is provided in the `examples/` folder in this repository. Just configure the config variables at the top of the file.
+
+## Credits
+* [Percona Server](https://github.com/percona/percona-server) used for the mysql8 image
