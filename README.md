@@ -15,6 +15,12 @@ After the container is done dumping, the dump is written to `/tmp/mysqldump/dump
 
 If you enabled compression by setting the `DUMP_COMPRESS` environment variable to anything non-empty, the dump will be gzip-compressed to `/tmp/mysqldump/dump.sql.gz`.
 
+### Running without Tailscale
+If you want to use this container as a plain mysqldump tool without Tailscale (e.g., for databases accessible directly), you can set the `SKIP_TAILSCALE` environment variable to any non-empty value. When this variable is set:
+- Tailscale setup is completely skipped
+- The container doesn't require `/dev/net/tun` bind mount or special capabilities
+- Only MySQL connection environment variables are needed
+
 ## Ready-to-use examples
 A ready-to-use script for backing up a MySQL database (e.g. for use with cron) is provided in the `examples/` folder in this repository. Just configure the config variables at the top of the file.
 

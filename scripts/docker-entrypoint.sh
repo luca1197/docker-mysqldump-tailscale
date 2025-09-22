@@ -1,30 +1,37 @@
 #!/bin/bash
 
-# Start tailscaled
-echo "[tailscaled] -> Starting"
-echo "[tailscaled] -> Version: $(tailscaled version)"
+# Check if tailscale should be skipped
+if [ -n "$SKIP_TAILSCALE" ]; then
+    echo "[Tailscale] -> Skipping tailscale setup (SKIP_TAILSCALE is set)"
+else
+    # Start tailscaled
+    echo "[tailscaled] -> Starting"
+    echo "[tailscaled] -> Version: $(tailscaled version)"
 
-tailscaled &
+    tailscaled &
 
-sleep 3
+    sleep 3
 
-# Log into tailscale
-echo "[Tailscale] -> Logging in... (Login server: $([ -n "$TS_LOGIN_SERVER" ] && echo "$TS_LOGIN_SERVER" || echo "Tailscale official"))"
+    # Log into tailscale
+    echo "[Tailscale] -> Logging in... (Login server: $([ -n "$TS_LOGIN_SERVER" ] && echo "$TS_LOGIN_SERVER" || echo "Tailscale official"))"
 
-tailscale_extra_args=()
-if [ -n "$TS_LOGIN_SERVER" ]; then
-    tailscale_extra_args+=("--login-server" "$TS_LOGIN_SERVER")
+    tailscale_extra_args=()
+    if [ -n "$TS_LOGIN_SERVER" ]; then
+        tailscale_extra_args+=("--login-server" "$TS_LOGIN_SERVER")
+    fi
+
+    tailscale up --accept-routes --hostname="$TS_HOSTNAME" --authkey=$TS_AUTHKEY "${tailscale_extra_args[@]}"
 fi
 
-tailscale up --accept-routes --hostname="$TS_HOSTNAME" --authkey=$TS_AUTHKEY "${tailscale_extra_args[@]}"
-
-# Wait for VPN connection
-until nc -z -v -w5 $DB_HOST $DB_PORT; do
-    echo "[Tailscale] -> Waiting for database VPN connection to be open ..."
+# Wait for VPN / database connection
+echo "[Database] -> Testing database connection..."
+until nc -z -v -w5 "$DB_HOST" "$DB_PORT"; do
+    echo "[Database] -> Waiting for database connection to be open ..."
     sleep 1
 done
+echo "[Database] -> Database connection ok"
 
-sleep 3
+sleep 1
 
 # Create config file with user and password
 touch mysql-extra.cnf
